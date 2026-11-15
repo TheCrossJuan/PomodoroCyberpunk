@@ -828,40 +828,15 @@
       color: #fff;
     }
 
-    /* Contenedor Iframe YouTube Mini HUD interactivo */
-    .yt-player-container {
-      display: none;
-      position: relative;
-      width: 100%;
-      height: 120px;
-      background: #000;
-      border: 1px solid var(--accent-color);
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9);
-      margin-top: 2px;
-    }
-
-    .yt-player-container.active {
-      display: block;
-    }
-
-    .yt-player-container iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    .yt-close-btn {
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      background: rgba(0, 0, 0, 0.85);
-      border: 1px solid var(--accent-color);
-      color: #fff;
-      font-size: 0.65rem;
-      font-family: 'JetBrains Mono', monospace;
-      padding: 2px 6px;
-      cursor: pointer;
-      z-index: 10;
+    /* Host oculto fuera de pantalla para el stream de audio de YouTube */
+    .yt-hidden-host {
+      position: fixed;
+      left: -9999px;
+      top: -9999px;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
     }
 
     /* Tasks Drawer HUD 100% responsive */
@@ -1704,8 +1679,6 @@
 <div class="media-presets-bar">
 <button class="preset-chip active" data-preset="0">CYBER LO-FI</button>
 <button class="preset-chip" data-preset="1">SYNTHWAVE AMBIENCE</button>
-
-
 </div>
 <!-- Cyber Slider de Volumen & Porcentaje Digital -->
 <div class="media-volume-strip">
@@ -1717,11 +1690,6 @@
 <div class="yt-input-group">
 <input id="ytUrlInput" placeholder="Enlace de YouTube / Stream..." type="text">
 <button class="btn-media-load" id="loadYtBtn">CARGAR</button>
-</div>
-<!-- Contenedor Miniatura Iframe YouTube Embebido -->
-<div class="yt-player-container" id="ytPlayerContainer">
-<button class="yt-close-btn" id="closeYtBtn" title="Cerrar YouTube Player">✕ CERRAR STREAM</button>
-<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" id="ytIframe" src=""></iframe>
 </div>
 </div>
 </div>
@@ -1737,6 +1705,8 @@
 </div>
 </div>
 </div>
+<!-- Host oculto para audio de YouTube -->
+<div id="ytHiddenHost" class="yt-hidden-host"></div>
 <audio id="ambientAudio" loop="" src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3"></audio>
 <script>
     const MODES = { FOCUS: 'focus', BREAK: 'break' };
@@ -1802,9 +1772,6 @@
     const trackSource = document.getElementById('trackSource');
     const loadYtBtn = document.getElementById('loadYtBtn');
     const ytUrlInput = document.getElementById('ytUrlInput');
-    const ytPlayerContainer = document.getElementById('ytPlayerContainer');
-    const ytIframe = document.getElementById('ytIframe');
-    const closeYtBtn = document.getElementById('closeYtBtn');
     const ambientAudio = document.getElementById('ambientAudio');
     const presetChips = document.querySelectorAll('.preset-chip');
 
@@ -1812,6 +1779,12 @@
     let isMuted = false;
     let currentVolume = 0.7;
     let lastVolumeBeforeMute = 0.7;
+
+    // Variables de control de YouTube en segundo plano
+    let ytPlayer = null;
+    let isYtReady = false;
+    let usingYouTube = false;
+    let pendingYtId = null;
 
     const AUDIO_TRACKS = [
       {
@@ -1838,6 +1811,77 @@
 
     let currentTrackIndex = 0;
     ambientAudio.volume = currentVolume;
+
+    /* ========================================================
+       YOUTUBE IFRAME PLAYER API (AUDIO EN SEGUNDO PLANO)
+       ======================================================== */
+    const ytApiTag = document.createElement('script');
+    ytApiTag.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(ytApiTag);
+
+    window.onYouTubeIframeAPIReady = function() {
+      ytPlayer = new YT.Player('ytHiddenHost', {
+        height: '1',
+        width: '1',
+        playerVars: {
+          autoplay: 1,
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          modestbranding: 1,
+          rel: 0
+        },
+        events: {
+          onReady: (event) => {
+            isYtReady = true;
+            event.target.setVolume(Math.round(currentVolume * 100));
+            if (isMuted) event.target.mute();
+            if (pendingYtId) {
+              startYtVideo(pendingYtId);
+              pendingYtId = null;
+            }
+          },
+          onStateChange: (event) => {
+            if (!usingYouTube) return;
+            if (event.data === YT.PlayerState.PLAYING) {
+              isPlayingAudio = true;
+              playAudioBtn.textContent = '⏸';
+              trackSource.textContent = 'CANAL ENLACE TÁCTICO // REPRODUCIENDO';
+            } else if (event.data === YT.PlayerState.PAUSED) {
+              isPlayingAudio = false;
+              playAudioBtn.textContent = '▶';
+              trackSource.textContent = 'CANAL ENLACE TÁCTICO // PAUSADO';
+            } else if (event.data === YT.PlayerState.ENDED) {
+              // Repetir automáticamente en bucle
+              ytPlayer.seekTo(0);
+              ytPlayer.playVideo();
+            }
+          },
+          onError: () => {
+            if (!usingYouTube) return;
+            isPlayingAudio = false;
+            playAudioBtn.textContent = '▶';
+            trackSource.textContent = 'ERROR: VÍDEO RESTRINGIDO O NO DISPONIBLE';
+          }
+        }
+      });
+    };
+
+    function startYtVideo(videoId) {
+      ambientAudio.pause();
+      usingYouTube = true;
+      presetChips.forEach(chip => chip.classList.remove('active'));
+      trackTitleDisplay.textContent = 'STREAM YOUTUBE // ID: ' + videoId;
+      trackSource.textContent = 'CONECTANDO ENLACE TÁCTICO...';
+
+      if (isYtReady && ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+        ytPlayer.setVolume(Math.round(currentVolume * 100));
+        if (isMuted) ytPlayer.mute(); else ytPlayer.unMute();
+        ytPlayer.loadVideoById(videoId);
+      } else {
+        pendingYtId = videoId;
+      }
+    }
 
     /* ========================================================
        WEB AUDIO API: SINTETIZADOR 8-BIT / RETRO CYBERPUNK
@@ -2296,7 +2340,7 @@
     updateTasksHUD();
 
     /* ========================================================
-       SISTEMA MULTIMEDIA AVANZADO (AUDIO & YOUTUBE STREAMING)
+       SISTEMA MULTIMEDIA UNIFICADO (PRESETS + YOUTUBE OCULTO)
        ======================================================== */
     function loadPresetTrack(index, autoPlay = true) {
       currentTrackIndex = (index + AUDIO_TRACKS.length) % AUDIO_TRACKS.length;
@@ -2306,12 +2350,15 @@
         chip.classList.toggle('active', i === currentTrackIndex);
       });
 
+      // Detener YouTube en segundo plano si estaba activo
+      usingYouTube = false;
+      pendingYtId = null;
+      if (isYtReady && ytPlayer && typeof ytPlayer.stopVideo === 'function') {
+        ytPlayer.stopVideo();
+      }
+
       ambientAudio.src = track.src;
       trackTitleDisplay.textContent = track.title;
-
-      // Ocultar iframe de YouTube si estaba activo al cambiar de preset
-      ytPlayerContainer.classList.remove('active');
-      ytIframe.src = "";
 
       if (autoPlay) {
         initAudioContext();
@@ -2338,21 +2385,30 @@
 
     playAudioBtn.addEventListener('click', () => {
       initAudioContext();
+
+      if (usingYouTube) {
+        if (isYtReady && ytPlayer) {
+          if (isPlayingAudio) {
+            ytPlayer.pauseVideo();
+          } else {
+            ytPlayer.playVideo();
+          }
+        }
+        return;
+      }
+
       if (isPlayingAudio) {
         ambientAudio.pause();
         playAudioBtn.textContent = '▶';
         trackSource.textContent = 'ESTADO: DETENIDO';
+        isPlayingAudio = false;
       } else {
-        // Si hay un video de YouTube activo en iframe
-        if (ytPlayerContainer.classList.contains('active')) {
-          ambientAudio.pause();
-        } else {
-          ambientAudio.play().catch(() => {});
-        }
-        playAudioBtn.textContent = '⏸';
-        trackSource.textContent = `FRECUENCIA: ACTIVA // ${AUDIO_TRACKS[currentTrackIndex].tag}`;
+        ambientAudio.play().then(() => {
+          playAudioBtn.textContent = '⏸';
+          trackSource.textContent = `FRECUENCIA: ACTIVA // ${AUDIO_TRACKS[currentTrackIndex].tag}`;
+          isPlayingAudio = true;
+        }).catch(() => {});
       }
-      isPlayingAudio = !isPlayingAudio;
     });
 
     prevTrackBtn.addEventListener('click', () => {
@@ -2363,10 +2419,20 @@
       loadPresetTrack(currentTrackIndex + 1, true);
     });
 
-    // Control de Volumen Cyberpunk Slider
+    // Control de Volumen Unificado (Audio local + YouTube)
     function setAudioVolume(vol) {
       currentVolume = Math.max(0, Math.min(1, vol));
       ambientAudio.volume = currentVolume;
+
+      if (isYtReady && ytPlayer && typeof ytPlayer.setVolume === 'function') {
+        ytPlayer.setVolume(Math.round(currentVolume * 100));
+        if (currentVolume === 0) {
+          ytPlayer.mute();
+        } else {
+          ytPlayer.unMute();
+        }
+      }
+
       volumeSlider.value = currentVolume;
       const pct = Math.round(currentVolume * 100);
       volumePercentDisplay.textContent = `VOL: ${pct}%`;
@@ -2399,26 +2465,25 @@
       }
     });
 
-    // Soporte para URLs de YouTube (conversor de URL a embed iframe interactivo)
+    // Soporte para URLs de YouTube (incluye watch, youtu.be, shorts, embed)
     function extractYouTubeID(url) {
-      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
       const match = url.match(regExp);
-      return (match && match[2].length === 11) ? match[2] : null;
+      return match ? match[1] : null;
     }
 
     function loadYouTubeStream(rawUrl) {
       const videoId = extractYouTubeID(rawUrl);
       if (videoId) {
-        ambientAudio.pause();
-        isPlayingAudio = true;
-        playAudioBtn.textContent = '⏸';
-        
-        ytPlayerContainer.classList.add('active');
-        ytIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
-        trackTitleDisplay.textContent = 'STREAM YOUTUBE // ID: ' + videoId;
-        trackSource.textContent = 'CANAL ENLACE TÁCTICO ACTIVO';
+        startYtVideo(videoId);
       } else {
-        // Intentar reproducir como archivo de audio streaming directo
+        // Si es un enlace directo de audio externo (.mp3, stream radio, etc.)
+        usingYouTube = false;
+        if (isYtReady && ytPlayer && typeof ytPlayer.stopVideo === 'function') {
+          ytPlayer.stopVideo();
+        }
+        presetChips.forEach(chip => chip.classList.remove('active'));
+
         ambientAudio.src = rawUrl;
         ambientAudio.play().then(() => {
           isPlayingAudio = true;
@@ -2426,7 +2491,9 @@
           trackTitleDisplay.textContent = 'CUSTOM AUDIO STREAM';
           trackSource.textContent = 'REPRODUCIENDO FLUJO EXTERNO';
         }).catch(() => {
-          trackSource.textContent = 'ERROR: STREAM NO ACCESIBLE';
+          isPlayingAudio = false;
+          playAudioBtn.textContent = '▶';
+          trackSource.textContent = 'ERROR: ENLACE NO VÁLIDO O BLOQUEADO';
         });
       }
     }
@@ -2445,20 +2512,11 @@
       }
     });
 
-    closeYtBtn.addEventListener('click', () => {
-      ytIframe.src = "";
-      ytPlayerContainer.classList.remove('active');
-      trackSource.textContent = 'STREAM DETENIDO';
-      playAudioBtn.textContent = '▶';
-      isPlayingAudio = false;
-    });
-
     /* ========================================================
        ATAJO DE TECLADO: BARRA ESPACIADORA (SPACE)
        Alterna Iniciar/Pausar Temporizador sin afectar inputs
        ======================================================== */
     window.addEventListener('keydown', (e) => {
-      // Si la tecla es espacio (Space / code 32)
       if (e.code === 'Space' || e.key === ' ' || e.keyCode === 32) {
         const activeElem = document.activeElement;
         const isInputField = activeElem && (
@@ -2467,16 +2525,13 @@
           activeElem.isContentEditable
         );
 
-        // Si el foco está en un input/textarea, permitir escribir el espacio normalmente
         if (isInputField) {
           return;
         }
 
-        // Si el usuario no está redactando texto, alternar temporizador
         e.preventDefault();
         toggleTimer();
 
-        // Efecto táctil sutil en el botón
         startBtn.style.transform = 'scale(0.96)';
         setTimeout(() => {
           startBtn.style.transform = '';
