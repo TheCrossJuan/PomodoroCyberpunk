@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-
-<html lang="es"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<!DOCTYPE html><html lang="es"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>CYBERWARE // Focus &amp; Break Terminal</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;700;800&amp;family=Syne:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;700;800&amp;family=Syne:wght@700;800&amp;display=swap" rel="stylesheet">
 <style>
     :root {
       --accent-color: #ff003c;
@@ -219,7 +217,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: clamp(16px, 4vw, 30px) clamp(12px, 3vw, 20px) 180px clamp(12px, 3vw, 20px);
+      padding: clamp(16px, 4vw, 30px) clamp(12px, 3vw, 20px) 210px clamp(12px, 3vw, 20px);
       position: relative;
       z-index: 5;
     }
@@ -360,7 +358,7 @@
       justify-content: center;
       gap: clamp(8px, 2.5vw, 20px);
       width: 100%;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
     .nav-arrow {
@@ -494,6 +492,7 @@
       transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
       text-align: center;
       white-space: nowrap;
+      position: relative;
     }
 
     .btn-primary:hover {
@@ -525,9 +524,35 @@
       background: rgba(255, 255, 255, 0.05);
     }
 
+    /* Badge sutil de atajo de teclado */
+    .keyboard-hint-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(0.6rem, 1.6vw, 0.68rem);
+      color: #71717a;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.85;
+      user-select: none;
+    }
+
+    .keyboard-hint-badge kbd {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      padding: 1px 6px;
+      color: var(--accent-light);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+
     /* ========================================================
        TACTICAL HUD DOCK (RESPONSIVE FLOTANTE O FIJO)
-       Agrupa Registro de Tareas y Barra Multimedia
+       Agrupa Registro de Tareas y Barra Multimedia Avanzada
        ======================================================== */
     .tactical-dock {
       position: fixed;
@@ -566,19 +591,19 @@
       box-shadow: 0 0 30px var(--accent-glow);
     }
 
-    /* Módulo Táctico Multimedia HUD Compacto */
+    /* Módulo Táctico Multimedia HUD Avanzado */
     .media-hud-module {
-      width: 380px;
+      width: 420px;
       max-width: 100%;
-      background: rgba(11, 13, 18, 0.94);
+      background: rgba(11, 13, 18, 0.95);
       backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-left: 2px solid var(--accent-color);
       clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-      padding: 10px 12px;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px var(--accent-subtle);
       transition: border-color 0.3s ease;
       box-sizing: border-box;
@@ -613,11 +638,41 @@
       transform: scale(1.05);
     }
 
+    .audio-btn-sm {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+      color: #cbd5e1;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .audio-btn-sm:hover {
+      background: var(--accent-subtle);
+      border-color: var(--accent-color);
+      color: #fff;
+    }
+
+    .audio-btn-sm.active {
+      background: var(--accent-color);
+      color: #000;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
     .audio-info {
       display: flex;
       flex-direction: column;
       overflow: hidden;
       min-width: 0;
+      flex: 1;
     }
 
     .track-title { 
@@ -638,6 +693,93 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    /* Controles de Frecuencia / Presets Cyberpunk */
+    .media-presets-bar {
+      display: flex;
+      gap: 5px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+    .media-presets-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .preset-chip {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      padding: 3px 8px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      white-space: nowrap;
+      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+      transition: all 0.2s;
+    }
+
+    .preset-chip:hover, .preset-chip.active {
+      background: var(--accent-subtle);
+      border-color: var(--accent-color);
+      color: var(--accent-light);
+    }
+
+    /* Barra de volumen táctica */
+    .media-volume-strip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 4px 8px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .volume-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: #94a3b8;
+      letter-spacing: 0.5px;
+      min-width: 58px;
+      text-align: right;
+    }
+
+    .cyber-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      outline: none;
+      border-radius: 0;
+      transition: all 0.2s;
+    }
+
+    .cyber-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 12px;
+      height: 12px;
+      background: var(--accent-color);
+      cursor: pointer;
+      box-shadow: 0 0 8px var(--accent-glow);
+      clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
+      transition: transform 0.1s;
+    }
+
+    .cyber-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .cyber-slider::-moz-range-thumb {
+      width: 12px;
+      height: 12px;
+      background: var(--accent-color);
+      cursor: pointer;
+      border: none;
+      clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
     }
 
     .yt-input-group { 
@@ -686,12 +828,48 @@
       color: #fff;
     }
 
+    /* Contenedor Iframe YouTube Mini HUD interactivo */
+    .yt-player-container {
+      display: none;
+      position: relative;
+      width: 100%;
+      height: 120px;
+      background: #000;
+      border: 1px solid var(--accent-color);
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9);
+      margin-top: 2px;
+    }
+
+    .yt-player-container.active {
+      display: block;
+    }
+
+    .yt-player-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .yt-close-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 1px solid var(--accent-color);
+      color: #fff;
+      font-size: 0.65rem;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 2px 6px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
     /* Tasks Drawer HUD 100% responsive */
     .tasks-panel {
       position: fixed; 
-      bottom: 165px; 
+      bottom: 230px; 
       right: clamp(12px, 3vw, 28px); 
-      width: 380px;
+      width: 420px;
       max-width: calc(100vw - 24px);
       background: rgba(11, 13, 18, 0.96); 
       backdrop-filter: blur(20px);
@@ -1143,10 +1321,10 @@
         right: 12px;
         left: 12px;
         width: auto;
-        bottom: 160px;
+        bottom: 225px;
       }
       main {
-        padding-bottom: 190px;
+        padding-bottom: 240px;
       }
     }
 
@@ -1196,11 +1374,11 @@
         padding: 12px 14px;
       }
       .tasks-panel {
-        bottom: 155px;
+        bottom: 215px;
         padding: 14px 12px;
       }
       main {
-        padding-bottom: 200px;
+        padding-bottom: 260px;
       }
     }
 
@@ -1454,7 +1632,7 @@
 <div class="timer-navigation">
 <button class="nav-arrow" id="prevModeBtn" title="Volver a Enfoque">‹</button>
 <div class="timer-display-wrapper">
-<svg class="timer-svg" viewbox="0 0 250 250">
+<svg class="timer-svg" viewBox="0 0 250 250">
 <!-- Rejillas técnicas HUD concéntricas -->
 <circle class="circle-grid" cx="125" cy="125" r="118"></circle>
 <circle class="circle-grid" cx="125" cy="125" r="95"></circle>
@@ -1473,6 +1651,12 @@
 <button class="btn-primary" id="startBtn">INICIAR CICLO</button>
 <button class="btn-outline" id="resetBtn">REINICIAR</button>
 </div>
+<!-- Indicador sutil de atajo de teclado -->
+<div class="keyboard-hint-badge">
+<span>ATAJO RÁPIDO:</span>
+<kbd>ESPACIO</kbd>
+<span>// INICIAR • PAUSAR</span>
+</div>
 </div>
 </div>
 </main>
@@ -1480,7 +1664,7 @@
 <div class="tasks-panel" id="tasksPanel">
 <div class="tasks-header">
 <span>REGISTRO DE SUBRUTINAS</span>
-<span style="font-size:0.75rem; color:#64748b;">// LOG</span>
+<span style="font-size: 0.75rem; color: rgb(100, 116, 139);">// LOG</span>
 </div>
 <!-- Dynamic HUD Counter & Progress -->
 <div class="task-stats-bar">
@@ -1496,7 +1680,7 @@
 </div>
 </div>
 <div class="task-input-container">
-<input id="newTaskInput" placeholder="Nueva subrutina cyber..." type="text"/>
+<input id="newTaskInput" placeholder="Nueva subrutina cyber..." type="text">
 <button class="btn-secondary" id="addTaskBtn">+</button>
 </div>
 <ul class="task-list" id="taskList"></ul>
@@ -1504,18 +1688,40 @@
 <!-- Muelle Táctico HUD (Esquina inferior derecha) -->
 <div class="tactical-dock">
 <button class="tasks-toggle-btn" id="tasksToggleBtn">⚡ REGISTRO DE TAREAS</button>
-<!-- Módulo Compacto Multimedia HUD alineado debajo del botón de tareas -->
+<!-- Módulo Avanzado Multimedia HUD con Controles Completos -->
 <div class="media-hud-module">
 <div class="audio-player-hud">
-<button class="audio-btn" id="playAudioBtn">▶</button>
+<button class="audio-btn" id="playAudioBtn" title="Reproducir / Pausar">▶</button>
+<button class="audio-btn-sm" id="muteAudioBtn" title="Silenciar / Activar Sonido">🔊</button>
+<button class="audio-btn-sm" id="prevTrackBtn" title="Frecuencia Anterior">⏮</button>
+<button class="audio-btn-sm" id="nextTrackBtn" title="Siguiente Frecuencia">⏭</button>
 <div class="audio-info">
-<div class="track-title">FRECUENCIA AMBIENT / CYBER-LOFI</div>
+<div class="track-title" id="trackTitleDisplay">FRECUENCIA AMBIENT / CYBER-LOFI</div>
 <div class="track-source" id="trackSource">ESTADO: DETENIDO</div>
 </div>
 </div>
+<!-- Selector rápido de presets de frecuencias / audio -->
+<div class="media-presets-bar">
+<button class="preset-chip active" data-preset="0">CYBER LO-FI</button>
+<button class="preset-chip" data-preset="1">SYNTHWAVE AMBIENCE</button>
+
+
+</div>
+<!-- Cyber Slider de Volumen & Porcentaje Digital -->
+<div class="media-volume-strip">
+<span style="font-size: 0.75rem; color: rgb(100, 116, 139);">🎚</span>
+<input class="cyber-slider" id="volumeSlider" max="1" min="0" step="0.05" title="Control de Ganancia" type="range" value="0.7">
+<span class="volume-tag" id="volumePercentDisplay">VOL: 70%</span>
+</div>
+<!-- Input YouTube / Stream URL -->
 <div class="yt-input-group">
-<input id="ytUrlInput" placeholder="Enlace de YouTube / Audio..." type="text"/>
+<input id="ytUrlInput" placeholder="Enlace de YouTube / Stream..." type="text">
 <button class="btn-media-load" id="loadYtBtn">CARGAR</button>
+</div>
+<!-- Contenedor Miniatura Iframe YouTube Embebido -->
+<div class="yt-player-container" id="ytPlayerContainer">
+<button class="yt-close-btn" id="closeYtBtn" title="Cerrar YouTube Player">✕ CERRAR STREAM</button>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" id="ytIframe" src=""></iframe>
 </div>
 </div>
 </div>
@@ -1524,16 +1730,14 @@
 <div class="modal">
 <h3 id="modalTitle">PROGRAMAR TIEMPO</h3>
 <label for="minutesInput">DURACIÓN EN MINUTOS:</label>
-<input id="minutesInput" max="180" min="1" type="number" value="25"/>
+<input id="minutesInput" max="180" min="1" type="number" value="25">
 <div style="display:flex; gap: 10px;">
-<button class="btn-primary" id="saveSettingsBtn" style="flex:1;">GUARDAR</button>
+<button class="btn-primary" id="saveSettingsBtn" style="flex: 1 1 0%;">GUARDAR</button>
 <button class="btn-outline" id="closeSettingsBtn">CANCELAR</button>
 </div>
 </div>
 </div>
 <audio id="ambientAudio" loop="" src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3"></audio>
-<!-- Reproductor oculto de YouTube -->
-<div id="ytPlayerContainer" style="display: none;"></div>
 <script>
     const MODES = { FOCUS: 'focus', BREAK: 'break' };
     let currentMode = MODES.FOCUS;
@@ -1587,12 +1791,53 @@
     const taskProgressBar = document.getElementById('taskProgressBar');
     const purgeTasksBtn = document.getElementById('purgeTasksBtn');
 
+    // Advanced Media HUD Elements
     const playAudioBtn = document.getElementById('playAudioBtn');
-    const ambientAudio = document.getElementById('ambientAudio');
+    const muteAudioBtn = document.getElementById('muteAudioBtn');
+    const prevTrackBtn = document.getElementById('prevTrackBtn');
+    const nextTrackBtn = document.getElementById('nextTrackBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumePercentDisplay = document.getElementById('volumePercentDisplay');
+    const trackTitleDisplay = document.getElementById('trackTitleDisplay');
     const trackSource = document.getElementById('trackSource');
     const loadYtBtn = document.getElementById('loadYtBtn');
     const ytUrlInput = document.getElementById('ytUrlInput');
+    const ytPlayerContainer = document.getElementById('ytPlayerContainer');
+    const ytIframe = document.getElementById('ytIframe');
+    const closeYtBtn = document.getElementById('closeYtBtn');
+    const ambientAudio = document.getElementById('ambientAudio');
+    const presetChips = document.querySelectorAll('.preset-chip');
+
     let isPlayingAudio = false;
+    let isMuted = false;
+    let currentVolume = 0.7;
+    let lastVolumeBeforeMute = 0.7;
+
+    const AUDIO_TRACKS = [
+      {
+        title: "FRECUENCIA AMBIENT / CYBER-LOFI",
+        src: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3",
+        tag: "CORE: PROTOCOL 01"
+      },
+      {
+        title: "SYNTHWAVE AMBIENCE / RETRO-DRIVE",
+        src: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=synthwave-80s-110045.mp3",
+        tag: "CORE: PROTOCOL 02"
+      },
+      {
+        title: "DEEP FOCUS DRONE / NEURAL SYNC",
+        src: "https://cdn.pixabay.com/download/audio/2021/09/06/audio_73151dfb39.mp3?filename=ambient-piano-amp-strings-10711.mp3",
+        tag: "CORE: PROTOCOL 03"
+      },
+      {
+        title: "NEO-TOKYO RAIN / CYBERPUNK SLEEP",
+        src: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=relaxing-rain-ambient-lofi-20790.mp3",
+        tag: "CORE: PROTOCOL 04"
+      }
+    ];
+
+    let currentTrackIndex = 0;
+    ambientAudio.volume = currentVolume;
 
     /* ========================================================
        WEB AUDIO API: SINTETIZADOR 8-BIT / RETRO CYBERPUNK
@@ -2050,84 +2295,199 @@
     });
     updateTasksHUD();
 
-   // Cargar la API oficial de YouTube
-const tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-document.head.appendChild(tag);
+    /* ========================================================
+       SISTEMA MULTIMEDIA AVANZADO (AUDIO & YOUTUBE STREAMING)
+       ======================================================== */
+    function loadPresetTrack(index, autoPlay = true) {
+      currentTrackIndex = (index + AUDIO_TRACKS.length) % AUDIO_TRACKS.length;
+      const track = AUDIO_TRACKS[currentTrackIndex];
+      
+      presetChips.forEach((chip, i) => {
+        chip.classList.toggle('active', i === currentTrackIndex);
+      });
 
-let ytPlayer = null;
-let usingYouTube = false;
+      ambientAudio.src = track.src;
+      trackTitleDisplay.textContent = track.title;
 
-function onYouTubeIframeAPIReady() {
-  ytPlayer = new YT.Player('ytPlayerContainer', {
-    height: '0',
-    width: '0',
-    playerVars: { 'autoplay': 1, 'controls': 0, 'loop': 1 },
-    events: {
-      'onStateChange': (event) => {
-        if (event.data === YT.PlayerState.PLAYING) {
+      // Ocultar iframe de YouTube si estaba activo al cambiar de preset
+      ytPlayerContainer.classList.remove('active');
+      ytIframe.src = "";
+
+      if (autoPlay) {
+        initAudioContext();
+        ambientAudio.play().then(() => {
           isPlayingAudio = true;
           playAudioBtn.textContent = '⏸';
-          trackSource.textContent = 'YT STREAM: REPRODUCIENDO';
-        } else if (event.data === YT.PlayerState.PAUSED) {
+          trackSource.textContent = `FRECUENCIA: ACTIVA // ${track.tag}`;
+        }).catch(() => {
           isPlayingAudio = false;
           playAudioBtn.textContent = '▶';
-          trackSource.textContent = 'YT STREAM: PAUSADO';
-        }
-      },
-      'onError': () => {
-        trackSource.textContent = 'ERROR: VÍDEO BLOQUEADO POR AUTOR';
+          trackSource.textContent = 'ESTADO: DETENIDO';
+        });
+      } else {
+        trackSource.textContent = `SELECCIÓN LISTA // ${track.tag}`;
       }
     }
-  });
-}
 
-	// Función para extraer el ID de cualquier enlace de YouTube
-	function extractYouTubeID(url) {
-  	const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-  	const match = url.match(regExp);
-  	return match ? match[1] : null;
-	}
+    presetChips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const idx = parseInt(chip.getAttribute('data-preset'), 10);
+        loadPresetTrack(idx, true);
+      });
+    });
 
-	// Control unificado Play / Pause (sirve tanto para el Lofi local como para YouTube)
-	playAudioBtn.addEventListener('click', () => {
-  	initAudioContext();
-  	if (usingYouTube && ytPlayer && ytPlayer.playVideo) {
-    	if (isPlayingAudio) {
-      	ytPlayer.pauseVideo();
-    	} else {
-      	ytPlayer.playVideo();
-    	}
-  	} else {
-    	if (isPlayingAudio) {
-      		ambientAudio.pause();
-      		playAudioBtn.textContent = '▶';
-      		trackSource.textContent = 'ESTADO: DETENIDO';
-    	} else {
-      		ambientAudio.play();
-      		playAudioBtn.textContent = '⏸';
-      		trackSource.textContent = 'FRECUENCIA: CYBER-LOFI ACTIVA';
-    	}
-    	isPlayingAudio = !isPlayingAudio;
-  	}
-});
+    playAudioBtn.addEventListener('click', () => {
+      initAudioContext();
+      if (isPlayingAudio) {
+        ambientAudio.pause();
+        playAudioBtn.textContent = '▶';
+        trackSource.textContent = 'ESTADO: DETENIDO';
+      } else {
+        // Si hay un video de YouTube activo en iframe
+        if (ytPlayerContainer.classList.contains('active')) {
+          ambientAudio.pause();
+        } else {
+          ambientAudio.play().catch(() => {});
+        }
+        playAudioBtn.textContent = '⏸';
+        trackSource.textContent = `FRECUENCIA: ACTIVA // ${AUDIO_TRACKS[currentTrackIndex].tag}`;
+      }
+      isPlayingAudio = !isPlayingAudio;
+    });
 
-// Botón CARGAR URL
-loadYtBtn.addEventListener('click', () => {
-  const url = ytUrlInput.value.trim();
-  if (!url) return;
+    prevTrackBtn.addEventListener('click', () => {
+      loadPresetTrack(currentTrackIndex - 1, true);
+    });
 
-  const videoId = extractYouTubeID(url);
-  if (videoId && ytPlayer && ytPlayer.loadVideoById) {
-    ambientAudio.pause(); // Detiene el audio lofi por defecto
-    usingYouTube = true;
-    trackSource.textContent = 'CONECTANDO CON YOUTUBE...';
-    ytPlayer.loadVideoById({ videoId: videoId, playlist: videoId });
-  } else {
-    trackSource.textContent = 'ERROR: ENLACE YT NO VÁLIDO';
-  }
-});
+    nextTrackBtn.addEventListener('click', () => {
+      loadPresetTrack(currentTrackIndex + 1, true);
+    });
 
+    // Control de Volumen Cyberpunk Slider
+    function setAudioVolume(vol) {
+      currentVolume = Math.max(0, Math.min(1, vol));
+      ambientAudio.volume = currentVolume;
+      volumeSlider.value = currentVolume;
+      const pct = Math.round(currentVolume * 100);
+      volumePercentDisplay.textContent = `VOL: ${pct}%`;
+
+      if (currentVolume === 0) {
+        isMuted = true;
+        muteAudioBtn.textContent = '🔇';
+        muteAudioBtn.classList.add('active');
+      } else {
+        isMuted = false;
+        muteAudioBtn.textContent = '🔊';
+        muteAudioBtn.classList.remove('active');
+      }
+    }
+
+    volumeSlider.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      setAudioVolume(val);
+      if (val > 0) {
+        lastVolumeBeforeMute = val;
+      }
+    });
+
+    muteAudioBtn.addEventListener('click', () => {
+      if (isMuted) {
+        setAudioVolume(lastVolumeBeforeMute > 0 ? lastVolumeBeforeMute : 0.7);
+      } else {
+        lastVolumeBeforeMute = currentVolume > 0 ? currentVolume : 0.7;
+        setAudioVolume(0);
+      }
+    });
+
+    // Soporte para URLs de YouTube (conversor de URL a embed iframe interactivo)
+    function extractYouTubeID(url) {
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : null;
+    }
+
+    function loadYouTubeStream(rawUrl) {
+      const videoId = extractYouTubeID(rawUrl);
+      if (videoId) {
+        ambientAudio.pause();
+        isPlayingAudio = true;
+        playAudioBtn.textContent = '⏸';
+        
+        ytPlayerContainer.classList.add('active');
+        ytIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
+        trackTitleDisplay.textContent = 'STREAM YOUTUBE // ID: ' + videoId;
+        trackSource.textContent = 'CANAL ENLACE TÁCTICO ACTIVO';
+      } else {
+        // Intentar reproducir como archivo de audio streaming directo
+        ambientAudio.src = rawUrl;
+        ambientAudio.play().then(() => {
+          isPlayingAudio = true;
+          playAudioBtn.textContent = '⏸';
+          trackTitleDisplay.textContent = 'CUSTOM AUDIO STREAM';
+          trackSource.textContent = 'REPRODUCIENDO FLUJO EXTERNO';
+        }).catch(() => {
+          trackSource.textContent = 'ERROR: STREAM NO ACCESIBLE';
+        });
+      }
+    }
+
+    loadYtBtn.addEventListener('click', () => {
+      const url = ytUrlInput.value.trim();
+      if (url) {
+        loadYouTubeStream(url);
+      }
+    });
+
+    ytUrlInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const url = ytUrlInput.value.trim();
+        if (url) loadYouTubeStream(url);
+      }
+    });
+
+    closeYtBtn.addEventListener('click', () => {
+      ytIframe.src = "";
+      ytPlayerContainer.classList.remove('active');
+      trackSource.textContent = 'STREAM DETENIDO';
+      playAudioBtn.textContent = '▶';
+      isPlayingAudio = false;
+    });
+
+    /* ========================================================
+       ATAJO DE TECLADO: BARRA ESPACIADORA (SPACE)
+       Alterna Iniciar/Pausar Temporizador sin afectar inputs
+       ======================================================== */
+    window.addEventListener('keydown', (e) => {
+      // Si la tecla es espacio (Space / code 32)
+      if (e.code === 'Space' || e.key === ' ' || e.keyCode === 32) {
+        const activeElem = document.activeElement;
+        const isInputField = activeElem && (
+          activeElem.tagName === 'INPUT' || 
+          activeElem.tagName === 'TEXTAREA' || 
+          activeElem.isContentEditable
+        );
+
+        // Si el foco está en un input/textarea, permitir escribir el espacio normalmente
+        if (isInputField) {
+          return;
+        }
+
+        // Si el usuario no está redactando texto, alternar temporizador
+        e.preventDefault();
+        toggleTimer();
+
+        // Efecto táctil sutil en el botón
+        startBtn.style.transform = 'scale(0.96)';
+        setTimeout(() => {
+          startBtn.style.transform = '';
+        }, 120);
+      }
+    });
+
+    // Iniciar con volumen y preset por defecto
+    setAudioVolume(0.7);
     setMode(MODES.FOCUS);
   </script>
+
+
 </body></html>
